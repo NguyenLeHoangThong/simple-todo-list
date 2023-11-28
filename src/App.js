@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useEffect, createContext, useReducer, useContext } from "react";
+import { AddTask } from "./components/AddTask";
+import { FilterTask } from "./components/FilterTask";
+import { TaskList } from "./components/TaskList";
+import { todoReducer } from "./context/reducer";
+import { initialData } from "./context/store";
+
+const TodoContext = createContext();
+
+export const useTodoContext = () => {
+  const context = useContext(TodoContext);
+  if (!context) {
+    throw new Error("useTodoContext must be used within a TodoProvider");
+  }
+  return context;
+};
 
 function App() {
+  const [state, dispatch] = useReducer(todoReducer, initialData);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <TodoContext.Provider value={{ state, dispatch }}>
+      <div style={{ padding: 30 }}>
+        <AddTask />
+        <FilterTask />
+        <TaskList />
+      </div>
+    </TodoContext.Provider>
   );
 }
 
